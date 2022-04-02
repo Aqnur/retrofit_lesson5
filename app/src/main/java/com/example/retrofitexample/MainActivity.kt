@@ -7,13 +7,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitexample.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Exception
+import java.lang.IllegalStateException
+import kotlin.coroutines.CoroutineContext
 
-class MainActivity : AppCompatActivity(), PostAdapter.RecyclerViewItemClick {
+class MainActivity : AppCompatActivity(), PostAdapter.RecyclerViewItemClick, CoroutineScope {
 
     private lateinit var binding: ActivityMainBinding
+
+    private val job: Job = Job()
+
+    override val coroutineContext: CoroutineContext = Dispatchers.IO + job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +38,7 @@ class MainActivity : AppCompatActivity(), PostAdapter.RecyclerViewItemClick {
         }
 
         setAdapter()
-        getPosts()
+        getPostsCoroutine()
     }
 
     private fun setAdapter() {
@@ -57,10 +68,28 @@ class MainActivity : AppCompatActivity(), PostAdapter.RecyclerViewItemClick {
                 if (response.isSuccessful) {
                     val list = response.body()
                     binding.recyclerView.adapter =
-                        PostAdapter(list = list, itemClickListener = this@MainActivity)
+                        PostAdapter(list = list!!, itemClickListener = this@MainActivity)
                 }
             }
         })
+    }
+
+    private fun getPostsCoroutine() {
+        launch {
+            binding.swipeRefresh.isRefreshing = true
+            val response = RetrofitService.getPostApi().getPostListCoroutine()
+            if (response.isSuccessful) {
+                binding.recyclerView.adapter = PostAdapter(response.body(), itemClickListener = this@MainActivity)
+                binding.swipeRefresh.isRefreshing = false
+            } else {
+
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 
 }
