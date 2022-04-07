@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity(), PostAdapter.RecyclerViewItemClick, Cor
 
     private val job: Job = Job()
 
-    override val coroutineContext: CoroutineContext = Dispatchers.IO + job
+    override val coroutineContext: CoroutineContext = Dispatchers.Main + job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +33,12 @@ class MainActivity : AppCompatActivity(), PostAdapter.RecyclerViewItemClick, Cor
         setContentView(view)
 
         binding.swipeRefresh.setOnRefreshListener {
-            (binding.recyclerView.adapter as PostAdapter).clearAll()
-            getPosts()
+//            (binding.recyclerView.adapter as PostAdapter).clearAll()
+            getPostsCoroutine()
         }
+
+        binding.recyclerView.adapter =
+            PostAdapter(itemClickListener = this@MainActivity)
 
         setAdapter()
         getPostsCoroutine()
@@ -55,31 +58,12 @@ class MainActivity : AppCompatActivity(), PostAdapter.RecyclerViewItemClick, Cor
         startActivity(intent)
     }
 
-    private fun getPosts() {
-        binding.swipeRefresh.isRefreshing = true
-        RetrofitService.getPostApi().getPostList().enqueue(object : Callback<List<Post>> {
-            override fun onFailure(call: Call<List<Post>>, t: Throwable) {
-                binding.swipeRefresh.isRefreshing = false
-            }
-
-            override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
-                Log.d("My_post_list", response.body().toString())
-                binding.swipeRefresh.isRefreshing = false
-                if (response.isSuccessful) {
-                    val list = response.body()
-                    binding.recyclerView.adapter =
-                        PostAdapter(list = list!!, itemClickListener = this@MainActivity)
-                }
-            }
-        })
-    }
-
     private fun getPostsCoroutine() {
         launch {
             binding.swipeRefresh.isRefreshing = true
             val response = RetrofitService.getPostApi().getPostListCoroutine()
             if (response.isSuccessful) {
-                binding.recyclerView.adapter = PostAdapter(response.body(), itemClickListener = this@MainActivity)
+                (binding.recyclerView.adapter as PostAdapter).submitList(response.body())
                 binding.swipeRefresh.isRefreshing = false
             } else {
 
