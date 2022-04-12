@@ -1,4 +1,4 @@
-package com.example.retrofitexample
+package com.example.retrofitexample.view
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.retrofitexample.R
 import com.example.retrofitexample.databinding.ItemPostBinding
+import com.example.retrofitexample.model.Post
 
 class PostAdapter(
     val itemClickListener: RecyclerViewItemClick? = null

@@ -1,6 +1,7 @@
 package com.example.retrofitexample
 
 import android.util.Log
+import com.example.retrofitexample.model.Post
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -53,4 +54,7 @@ interface PostApi {
 
     @GET("posts/{id}")
     fun getPostById(@Path("id") id: Int): Call<Post>
+
+    @GET("posts/{id}")
+    suspend fun getPostByIdCoroutine(@Path("id") id: Int): Response<Post>
 }
