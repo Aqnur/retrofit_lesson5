@@ -2,24 +2,20 @@ package com.example.retrofitexample.view
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.retrofitexample.model.Post
-import com.example.retrofitexample.RetrofitService
+import com.example.retrofitexample.common.BaseActivity
+import com.example.retrofitexample.viewmodel.ViewModelProviderFactory
 import com.example.retrofitexample.databinding.ActivityMainBinding
 import com.example.retrofitexample.viewmodel.PostListViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
+import com.example.retrofitexample.viewmodel.PostListViewModelObserver
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: PostListViewModel
+    private lateinit var viewModelObserver: PostListViewModelObserver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,11 +47,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initAndObserveViewModel() {
-        viewModel = ViewModelProvider(this)[PostListViewModel::class.java]
+        val viewModelProviderFactory = ViewModelProviderFactory(this)
+        viewModel = ViewModelProvider(this, viewModelProviderFactory)[PostListViewModel::class.java]
 
-        viewModel.liveData.observe(
-            this,
-            {
+        viewModelObserver = PostListViewModelObserver(
+            context = this,
+            viewModel = viewModel,
+            viewLifecycleOwner = this,
+            liveData = {
                 when (it) {
                     is PostListViewModel.State.ShowLoading -> {
                         binding.swipeRefresh.isRefreshing = true
@@ -67,12 +66,8 @@ class MainActivity : AppCompatActivity() {
                         (binding.recyclerView.adapter as PostAdapter).submitList(it.list)
                     }
                 }
-            }
-        )
-
-        viewModel.openDetail.observe(
-            this,
-            {
+            },
+            openDetail = {
                 val intent = Intent(this, PostDetailActivity::class.java)
                 intent.putExtra("post_id", it.postId)
                 startActivity(intent)

@@ -1,7 +1,8 @@
-package com.example.retrofitexample
+package com.example.retrofitexample.model
 
 import android.util.Log
-import com.example.retrofitexample.model.Post
+import com.example.retrofitexample.model.api.Post
+import com.example.retrofitexample.utils.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -13,8 +14,6 @@ import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
 object RetrofitService {
-
-    const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 
     fun getPostApi(): PostApi {
         val retrofit = Retrofit.Builder()

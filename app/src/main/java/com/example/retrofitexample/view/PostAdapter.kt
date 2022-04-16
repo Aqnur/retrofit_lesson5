@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitexample.R
 import com.example.retrofitexample.databinding.ItemPostBinding
-import com.example.retrofitexample.model.Post
+import com.example.retrofitexample.model.api.Post
 
 class PostAdapter(
     val itemClickListener: RecyclerViewItemClick? = null

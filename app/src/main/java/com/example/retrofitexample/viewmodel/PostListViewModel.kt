@@ -1,10 +1,11 @@
 package com.example.retrofitexample.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.retrofitexample.RetrofitService
-import com.example.retrofitexample.model.Post
+import com.example.retrofitexample.model.RetrofitService
+import com.example.retrofitexample.model.api.Post
 import com.example.retrofitexample.view.PostAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +13,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class PostListViewModel: ViewModel(), CoroutineScope {
+class PostListViewModel(
+    private val context: Context
+) : ViewModel(), CoroutineScope {
 
     private val job: Job = Job()
 
