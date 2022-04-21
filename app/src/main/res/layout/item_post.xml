@@ -55,18 +55,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="10dp"
-            android:text="@{data.postId}"
+            android:text="@{data.postId.toString()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="tv_post_id" />
-
-        <ImageView
-            android:id="@+id/iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tv_post_id"
-            app:layout_constraintStart_toStartOf="parent"
-            app:bindIconUrl="@{data.title}"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

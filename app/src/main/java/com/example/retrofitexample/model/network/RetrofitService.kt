@@ -1,4 +1,4 @@
-package com.example.retrofitexample.model
+package com.example.retrofitexample.model.network
 
 import android.util.Log
 import com.example.retrofitexample.model.api.Post
@@ -41,19 +41,4 @@ object RetrofitService {
             level = HttpLoggingInterceptor.Level.BODY
         }
     }
-}
-
-interface PostApi {
-
-    @GET("posts")
-    fun getPostList(): Call<List<Post>>
-
-    @GET("posts")
-    suspend fun getPostListCoroutine(): Response<List<Post>>
-
-    @GET("posts/{id}")
-    fun getPostById(@Path("id") id: Int): Call<Post>
-
-    @GET("posts/{id}")
-    suspend fun getPostByIdCoroutine(@Path("id") id: Int): Response<Post>
 }
