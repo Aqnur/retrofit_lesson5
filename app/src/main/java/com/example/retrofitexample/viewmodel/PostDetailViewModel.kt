@@ -32,6 +32,16 @@ class PostDetailViewModel(private val app: Application) : AndroidViewModel(app),
         }
     }
 
+    val titleFieldText = MutableLiveData<String>()
+    val descriptionFieldText = MutableLiveData<String>()
+
+    fun onSuccess(post: Post?) {
+        post?.let {
+            titleFieldText.value = it.title
+            descriptionFieldText.value = it.body
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         job.cancel()

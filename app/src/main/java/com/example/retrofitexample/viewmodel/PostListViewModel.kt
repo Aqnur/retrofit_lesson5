@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.retrofitexample.model.RetrofitService
 import com.example.retrofitexample.model.api.Post
+import com.example.retrofitexample.utils.RecyclerViewItemClick
 import com.example.retrofitexample.view.PostAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,9 +46,9 @@ class PostListViewModel(
         }
     }
 
-    val recyclerViewItemClickListener = object : PostAdapter.RecyclerViewItemClick {
+    val recyclerViewItemClickListener = object : RecyclerViewItemClick {
 
-        override fun itemClick(position: Int, item: Post) {
+        override fun itemClick(item: Post) {
             _openDetail.value = item
         }
 

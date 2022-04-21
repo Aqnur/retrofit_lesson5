@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitexample.R
 import com.example.retrofitexample.databinding.ItemPostBinding
 import com.example.retrofitexample.model.api.Post
+import com.example.retrofitexample.utils.RecyclerViewItemClick
 
 class PostAdapter(
     val itemClickListener: RecyclerViewItemClick? = null
@@ -82,24 +83,8 @@ class PostAdapter(
 
         fun initContent(data: Post?) {
             binding.data = data
+            binding.recyclerViewItemClickListener = itemClickListener
             binding.executePendingBindings()
-
-            binding.clMain.setOnClickListener {
-                itemClickListener?.itemClick(adapterPosition, data!!)
-            }
-        }
-    }
-
-    inner class Post2ViewHolder(val binding: ItemPostBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        fun initContent(data: Post?) {
-            binding.data = data
-            binding.executePendingBindings()
-
-            binding.clMain.setOnClickListener {
-                itemClickListener?.itemClick(adapterPosition, data!!)
-            }
         }
     }
 
@@ -108,8 +93,4 @@ class PostAdapter(
             is Post -> VIEW_TYPE_POST
             else -> throw IllegalStateException("Incorrect ViewType found")
         }
-
-    interface RecyclerViewItemClick {
-        fun itemClick(position: Int, item: Post)
-    }
 }
