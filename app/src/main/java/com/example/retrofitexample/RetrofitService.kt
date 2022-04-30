@@ -4,6 +4,7 @@ import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -46,6 +47,9 @@ interface PostApi {
 
     @GET("posts")
     fun getPostList(): Call<List<Post>>
+
+    @GET("posts")
+    suspend fun getPostListCoroutine(): Response<List<Post>>
 
     @GET("posts/{id}")
     fun getPostById(@Path("id") id: Int): Call<Post>
