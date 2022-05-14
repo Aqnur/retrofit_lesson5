@@ -8,6 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitexample.common.BaseActivity
 import com.example.retrofitexample.viewmodel.ViewModelProviderFactory
 import com.example.retrofitexample.databinding.ActivityMainBinding
+import com.example.retrofitexample.model.database.PostDao
+import com.example.retrofitexample.model.database.PostDatabase
+import com.example.retrofitexample.model.network.RetrofitService
+import com.example.retrofitexample.model.repository.PostsRepository
+import com.example.retrofitexample.model.repository.PostsRepositoryImpl
 import com.example.retrofitexample.viewmodel.PostListViewModel
 import com.example.retrofitexample.viewmodel.PostListViewModelObserver
 
@@ -47,8 +52,10 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initAndObserveViewModel() {
-        val viewModelProviderFactory = ViewModelProviderFactory(this)
-        viewModel = ViewModelProvider(this, viewModelProviderFactory)[PostListViewModel::class.java]
+        val postDao: PostDao = PostDatabase.getDatabase(this).postDao()
+        val postRepository: PostsRepository = PostsRepositoryImpl(RetrofitService, postDao)
+
+        viewModel = PostListViewModel(postRepository)
 
         viewModelObserver = PostListViewModelObserver(
             context = this,

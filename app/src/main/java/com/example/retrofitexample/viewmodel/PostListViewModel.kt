@@ -8,16 +8,16 @@ import com.example.retrofitexample.model.network.RetrofitService
 import com.example.retrofitexample.model.api.Post
 import com.example.retrofitexample.model.database.PostDao
 import com.example.retrofitexample.model.database.PostDatabase
+import com.example.retrofitexample.model.repository.PostsRepository
 import com.example.retrofitexample.utils.RecyclerViewItemClick
 import kotlinx.coroutines.*
 import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
 class PostListViewModel(
-    private val context: Context
+    private var repository: PostsRepository
 ) : ViewModel(), CoroutineScope {
 
-    private val postDao: PostDao
     private val job: Job = Job()
 
     override val coroutineContext: CoroutineContext
@@ -33,7 +33,6 @@ class PostListViewModel(
 
     init {
         getPostsCoroutine()
-        postDao = PostDatabase.getDatabase(context).postDao()
     }
 
     fun getPostsCoroutine() {
@@ -41,22 +40,13 @@ class PostListViewModel(
             _liveData.value = State.ShowLoading
             val list = withContext(Dispatchers.IO) {
                 try {
-
-                    val response = RetrofitService.getPostApi().getPostListCoroutine()
-
-                    if (response.isSuccessful) {
-                        val result = response.body()
-                        if (!result.isNullOrEmpty()) {
-                            postDao.insertAll(result)
-                        }
-                        result
-                    } else {
-                        postDao.getAll()
-
+                    val result = repository.getPosts()
+                    if(!result.isNullOrEmpty()){
+                        repository.insertAll(result)
                     }
-
+                    result
                 } catch (e: Exception) {
-                    postDao.getAll()
+                    repository.getAll()
                 }
 
             }
