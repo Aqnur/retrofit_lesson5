@@ -10,7 +10,7 @@ class PostListViewModelObserver(
     private val viewLifecycleOwner: LifecycleOwner,
 
     private val openDetail: ((post: Post) -> Unit),
-    private val liveData: ((state: PostListViewModel.State) -> Unit)
+//    private val liveData: ((state: PostListViewModel.State) -> Unit)
 ) {
 
     init {
@@ -18,13 +18,13 @@ class PostListViewModelObserver(
     }
 
     private fun observeViewModel() {
-        liveData.apply {
-            viewModel.liveData.observe(
-                viewLifecycleOwner
-            ) {
-                this.invoke(it)
-            }
-        }
+//        liveData.apply {
+//            viewModel.liveData.observe(
+//                viewLifecycleOwner
+//            ) {
+//                this.invoke(it)
+//            }
+//        }
 
         openDetail.apply {
             viewModel.openDetail.observe(

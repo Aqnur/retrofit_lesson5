@@ -4,6 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.retrofitexample.model.PageDataSource
 import com.example.retrofitexample.model.network.RetrofitService
 import com.example.retrofitexample.model.api.Post
 import com.example.retrofitexample.model.database.PostDao
@@ -11,6 +17,7 @@ import com.example.retrofitexample.model.database.PostDatabase
 import com.example.retrofitexample.model.repository.PostsRepository
 import com.example.retrofitexample.utils.RecyclerViewItemClick
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
@@ -32,7 +39,20 @@ class PostListViewModel(
         get() = _openDetail
 
     init {
-        getPostsCoroutine()
+//        getPostsCoroutine()
+    }
+
+    val posts: Flow<PagingData<Post>> = selectPosts()
+
+    private fun selectPosts(): Flow<PagingData<Post>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+            pagingSourceFactory = { PageDataSource(repository) }
+        ).flow.cachedIn(viewModelScope)
+    }
+
+    companion object {
+        const val PAGE_SIZE = 10
     }
 
     fun getPostsCoroutine() {
@@ -40,7 +60,7 @@ class PostListViewModel(
             _liveData.value = State.ShowLoading
             val list = withContext(Dispatchers.IO) {
                 try {
-                    val result = repository.getPosts()
+                    val result = repository.getPosts(1)
                     if(!result.isNullOrEmpty()){
                         repository.insertAll(result)
                     }

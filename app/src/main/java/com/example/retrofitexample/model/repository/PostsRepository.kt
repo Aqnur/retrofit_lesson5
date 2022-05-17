@@ -4,7 +4,7 @@ import com.example.retrofitexample.model.api.Post
 
 interface PostsRepository {
 
-    suspend fun getPosts(): List<Post>
+    suspend fun getPosts(page: Int): List<Post>
 
     suspend fun getPost(id: Int): Post
 

@@ -2,11 +2,10 @@ package com.example.retrofitexample.view
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitexample.common.BaseActivity
-import com.example.retrofitexample.viewmodel.ViewModelProviderFactory
 import com.example.retrofitexample.databinding.ActivityMainBinding
 import com.example.retrofitexample.model.database.PostDao
 import com.example.retrofitexample.model.database.PostDatabase
@@ -15,12 +14,17 @@ import com.example.retrofitexample.model.repository.PostsRepository
 import com.example.retrofitexample.model.repository.PostsRepositoryImpl
 import com.example.retrofitexample.viewmodel.PostListViewModel
 import com.example.retrofitexample.viewmodel.PostListViewModelObserver
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: PostListViewModel
     private lateinit var viewModelObserver: PostListViewModelObserver
+    private lateinit var adapter: PostAdapter
+    private var selectPosts: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,25 +34,40 @@ class MainActivity : BaseActivity() {
 
         initAndObserveViewModel()
 
-        binding.recyclerView.adapter =
-            PostAdapter(itemClickListener = viewModel.recyclerViewItemClickListener)
-
         setAdapter()
         setBindings()
     }
 
     private fun setBindings() {
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.getPostsCoroutine()
+//            viewModel.getPostsCoroutine()
         }
     }
 
     private fun setAdapter() {
+        adapter = PostAdapter(itemClickListener = viewModel.recyclerViewItemClickListener)
+
+        binding.recyclerView.adapter = adapter
+
         binding.recyclerView.layoutManager = LinearLayoutManager(
             this,
             RecyclerView.VERTICAL,
             false
         )
+
+        selectPosts?.cancel()
+        selectPosts = lifecycleScope.launch {
+            viewModel.posts.collectLatest {
+                (binding.recyclerView.adapter as PostAdapter).submitData(it)
+            }
+        }
+
+//        binding.recyclerView.adapter = (binding.recyclerView.adapter as PostAdapter).withLoadStateFooter(
+//            footer = CustomLoadStateAdapter {
+//                (binding.recyclerView.adapter as PostAdapter).retry()
+//            }
+//        )
+
     }
 
     private fun initAndObserveViewModel() {
@@ -61,19 +80,19 @@ class MainActivity : BaseActivity() {
             context = this,
             viewModel = viewModel,
             viewLifecycleOwner = this,
-            liveData = {
-                when (it) {
-                    is PostListViewModel.State.ShowLoading -> {
-                        binding.swipeRefresh.isRefreshing = true
-                    }
-                    is PostListViewModel.State.HideLoading -> {
-                        binding.swipeRefresh.isRefreshing = false
-                    }
-                    is PostListViewModel.State.Result -> {
-                        (binding.recyclerView.adapter as PostAdapter).submitList(it.list)
-                    }
-                }
-            },
+//            liveData = {
+//                when (it) {
+//                    is PostListViewModel.State.ShowLoading -> {
+//                        binding.swipeRefresh.isRefreshing = true
+//                    }
+//                    is PostListViewModel.State.HideLoading -> {
+//                        binding.swipeRefresh.isRefreshing = false
+//                    }
+//                    is PostListViewModel.State.Result -> {
+////                        (binding.recyclerView.adapter as PostAdapter).submitList(it.list)
+//                    }
+//                }
+//            }
             openDetail = {
                 val intent = Intent(this, PostDetailActivity::class.java)
                 intent.putExtra("post_id", it.postId)
