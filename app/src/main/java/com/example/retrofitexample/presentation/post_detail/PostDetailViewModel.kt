@@ -1,18 +1,19 @@
-package com.example.retrofitexample.viewmodel
+package com.example.retrofitexample.presentation.post_detail
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.retrofitexample.model.network.RetrofitService
-import com.example.retrofitexample.model.api.Post
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.retrofitexample.domain.common.UseCaseResponse
+import com.example.retrofitexample.domain.model.ApiError
+import com.example.retrofitexample.domain.model.api.Post
+import com.example.retrofitexample.domain.usecases.GetPostDetailUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class PostDetailViewModel(private val app: Application) : AndroidViewModel(app), CoroutineScope {
+class PostDetailViewModel(private val useCase: GetPostDetailUseCase) : ViewModel(), CoroutineScope {
 
     private val job = Job()
 
@@ -24,12 +25,16 @@ class PostDetailViewModel(private val app: Application) : AndroidViewModel(app),
         get() = _liveData
 
     fun getPost(id: Int) {
-        launch {
-            val response = RetrofitService.getPostApi().getPostByIdCoroutine(id)
-            if (response.isSuccessful) {
-                _liveData.postValue(response.body())
+        useCase.invoke(viewModelScope, id, object : UseCaseResponse<Post> {
+            override fun onSuccess(result: Post) {
+                _liveData.value = result
             }
-        }
+
+            override fun onError(apiError: ApiError?) {
+                //todo error handler
+            }
+
+        })
     }
 
     val titleFieldText = MutableLiveData<String>()

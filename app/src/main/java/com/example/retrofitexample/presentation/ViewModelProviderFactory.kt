@@ -1,4 +1,4 @@
-package com.example.retrofitexample.viewmodel
+package com.example.retrofitexample.presentation
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

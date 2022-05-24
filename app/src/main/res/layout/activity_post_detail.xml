@@ -7,13 +7,13 @@
 
         <variable
             name="viewModel"
-            type="com.example.retrofitexample.viewmodel.PostDetailViewModel" />
+            type="com.example.retrofitexample.presentation.post_detail.PostDetailViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.PostDetailActivity">
+        tools:context=".presentation.post_detail.PostDetailActivity">
 
         <TextView
             android:id="@+id/tv_title"

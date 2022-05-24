@@ -11,7 +11,7 @@
 
         <variable
             name="data"
-            type="com.example.retrofitexample.model.api.Post" />
+            type="com.example.retrofitexample.domain.model.api.Post" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

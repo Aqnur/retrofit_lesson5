@@ -1,21 +1,19 @@
-package com.example.retrofitexample.viewmodel
+package com.example.retrofitexample.presentation.posts
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.retrofitexample.model.network.RetrofitService
-import com.example.retrofitexample.model.api.Post
-import com.example.retrofitexample.model.database.PostDao
-import com.example.retrofitexample.model.database.PostDatabase
-import com.example.retrofitexample.model.repository.PostsRepository
+import androidx.lifecycle.viewModelScope
+import com.example.retrofitexample.domain.common.UseCaseResponse
+import com.example.retrofitexample.domain.model.ApiError
+import com.example.retrofitexample.domain.model.api.Post
+import com.example.retrofitexample.domain.usecases.GetPostsListUseCase
 import com.example.retrofitexample.utils.RecyclerViewItemClick
 import kotlinx.coroutines.*
-import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
 class PostListViewModel(
-    private var repository: PostsRepository
+    private var useCase: GetPostsListUseCase
 ) : ViewModel(), CoroutineScope {
 
     private val job: Job = Job()
@@ -31,28 +29,25 @@ class PostListViewModel(
     val openDetail: LiveData<Post>
         get() = _openDetail
 
+    private val _showError = MutableLiveData<ApiError>()
+    val showError: LiveData<ApiError>
+        get() = _showError
+
     init {
         getPostsCoroutine()
     }
 
     fun getPostsCoroutine() {
-        launch {
-            _liveData.value = State.ShowLoading
-            val list = withContext(Dispatchers.IO) {
-                try {
-                    val result = repository.getPosts()
-                    if(!result.isNullOrEmpty()){
-                        repository.insertAll(result)
-                    }
-                    result
-                } catch (e: Exception) {
-                    repository.getAll()
-                }
-
+        useCase.invoke(viewModelScope, null, object : UseCaseResponse<List<Post>> {
+            override fun onSuccess(result: List<Post>) {
+                _liveData.value = State.Result(result)
             }
-            _liveData.value = State.Result(list)
-            _liveData.value = State.HideLoading
-        }
+
+            override fun onError(apiError: ApiError?) {
+                _showError.value = apiError
+            }
+        })
+
     }
 
     val recyclerViewItemClickListener = object : RecyclerViewItemClick {

@@ -1,4 +1,4 @@
-package com.example.retrofitexample.view
+package com.example.retrofitexample.presentation.posts
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitexample.R
 import com.example.retrofitexample.databinding.ItemPostBinding
-import com.example.retrofitexample.model.api.Post
+import com.example.retrofitexample.domain.model.api.Post
 import com.example.retrofitexample.utils.RecyclerViewItemClick
 
 class PostAdapter(

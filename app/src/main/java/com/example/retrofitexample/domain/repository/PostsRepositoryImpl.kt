@@ -1,8 +1,8 @@
-package com.example.retrofitexample.model.repository
+package com.example.retrofitexample.domain.repository
 
-import com.example.retrofitexample.model.api.Post
-import com.example.retrofitexample.model.database.PostDao
-import com.example.retrofitexample.model.network.RetrofitService
+import com.example.retrofitexample.domain.model.api.Post
+import com.example.retrofitexample.data.database.PostDao
+import com.example.retrofitexample.data.network.RetrofitService
 
 class PostsRepositoryImpl(
     private val api: RetrofitService,

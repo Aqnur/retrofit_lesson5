@@ -1,14 +1,16 @@
-package com.example.retrofitexample.viewmodel
+package com.example.retrofitexample.presentation.posts
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
-import com.example.retrofitexample.model.api.Post
+import com.example.retrofitexample.domain.model.ApiError
+import com.example.retrofitexample.domain.model.api.Post
 
 class PostListViewModelObserver(
     private val context: Context,
     private val viewModel: PostListViewModel,
     private val viewLifecycleOwner: LifecycleOwner,
 
+    private val showError: ((apiError: ApiError) -> Unit),
     private val openDetail: ((post: Post) -> Unit),
     private val liveData: ((state: PostListViewModel.State) -> Unit)
 ) {
@@ -20,6 +22,14 @@ class PostListViewModelObserver(
     private fun observeViewModel() {
         liveData.apply {
             viewModel.liveData.observe(
+                viewLifecycleOwner
+            ) {
+                this.invoke(it)
+            }
+        }
+
+        showError.apply {
+            viewModel.showError.observe(
                 viewLifecycleOwner
             ) {
                 this.invoke(it)

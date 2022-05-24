@@ -1,10 +1,10 @@
-package com.example.retrofitexample.model.database
+package com.example.retrofitexample.data.database
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.retrofitexample.model.api.Post
+import com.example.retrofitexample.domain.model.api.Post
 
 @Dao
 interface PostDao {

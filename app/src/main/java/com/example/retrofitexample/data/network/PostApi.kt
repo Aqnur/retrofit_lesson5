@@ -1,6 +1,6 @@
-package com.example.retrofitexample.model.network
+package com.example.retrofitexample.data.network
 
-import com.example.retrofitexample.model.api.Post
+import com.example.retrofitexample.domain.model.api.Post
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET

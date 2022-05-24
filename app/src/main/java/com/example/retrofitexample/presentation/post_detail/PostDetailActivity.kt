@@ -1,17 +1,18 @@
-package com.example.retrofitexample.view
+package com.example.retrofitexample.presentation.post_detail
 
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitexample.R
-import com.example.retrofitexample.common.BaseActivity
+import com.example.retrofitexample.domain.common.BaseActivity
 import com.example.retrofitexample.databinding.ActivityPostDetailBinding
-import com.example.retrofitexample.viewmodel.PostDetailViewModel
+import com.example.retrofitexample.presentation.posts.PostListViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PostDetailActivity : BaseActivity() {
 
     private lateinit var binding: ActivityPostDetailBinding
-    private lateinit var viewModel: PostDetailViewModel
+    private val viewModel by viewModel<PostDetailViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +32,6 @@ class PostDetailActivity : BaseActivity() {
     }
 
     private fun initAndObserveViewModel() {
-        viewModel = ViewModelProvider(this)[PostDetailViewModel::class.java]
-
         viewModel.liveData.observe(
             this,
             {

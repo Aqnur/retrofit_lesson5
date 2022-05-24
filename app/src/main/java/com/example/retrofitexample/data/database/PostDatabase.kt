@@ -1,10 +1,10 @@
-package com.example.retrofitexample.model.database
+package com.example.retrofitexample.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.retrofitexample.model.api.Post
+import com.example.retrofitexample.domain.model.api.Post
 
 @Database(entities = [Post::class], version = 1)
 abstract class PostDatabase : RoomDatabase() {

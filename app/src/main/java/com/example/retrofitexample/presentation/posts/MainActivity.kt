@@ -1,13 +1,12 @@
-package com.example.retrofitexample.view
+package com.example.retrofitexample.presentation.posts
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.retrofitexample.common.BaseActivity
+import com.example.retrofitexample.domain.common.BaseActivity
 import com.example.retrofitexample.databinding.ActivityMainBinding
-import com.example.retrofitexample.viewmodel.PostListViewModel
-import com.example.retrofitexample.viewmodel.PostListViewModelObserver
+import com.example.retrofitexample.presentation.post_detail.PostDetailActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity() {
@@ -67,6 +66,9 @@ class MainActivity : BaseActivity() {
                 val intent = Intent(this, PostDetailActivity::class.java)
                 intent.putExtra("post_id", it.postId)
                 startActivity(intent)
+            },
+            showError = {
+                binding.tvError.text = it.message
             }
         )
 

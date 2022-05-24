@@ -1,6 +1,6 @@
-package com.example.retrofitexample.model.repository
+package com.example.retrofitexample.domain.repository
 
-import com.example.retrofitexample.model.api.Post
+import com.example.retrofitexample.domain.model.api.Post
 
 interface PostsRepository {
 
